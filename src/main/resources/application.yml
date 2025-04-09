@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3308/daelim?serverTimezone=Asia/Seoul
+    username: user
+    password: secret
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
