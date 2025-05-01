@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class BaseEntity {
     @CreatedDate
     @Column(nullable = false)
-    LocalDateTime createdTime;
+    LocalDateTime createdDate;
 
     @LastModifiedDate
     @Column(nullable = false)
@@ -30,7 +30,7 @@ public class BaseEntity {
         deleted = true;
     }
 
-    public void revive() {
+    public void revive () {
         deleted = false;
     }
 }
