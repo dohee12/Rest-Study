@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class SimpleGameService {
-    private final FoodRepository foodRepogitory;
+    private final FoodRepository foodRepository;
     private final UserRepository userRepository;
 
     public Integer getRandomNumber(Integer max) {
@@ -28,7 +28,7 @@ public class SimpleGameService {
     public String getRandomFood(String type) {
         String[] foods = {};
         if (type.equals("한식")) {
-            foods = new String[]{"떡볶이", "국밥", "비빔밥"};
+            foods = new String[]{"떡볶이", "국밥", "비빕밥"};
         } else if (type.equals("중식")) {
             foods = new String[]{"짜장면", "짬뽕", "탕수육"};
         } else if (type.equals("일식")) {
@@ -40,30 +40,29 @@ public class SimpleGameService {
         return foods[randomNumber];
     }
 
-    public String addfood(AddFoodReqDto addFoodReqDto) {
+    public String addFood(AddFoodReqDto addFoodReqDto) {
         Food food = new Food();
         food.setName(addFoodReqDto.getName());
         food.setType(addFoodReqDto.getType());
         food.setPrice(addFoodReqDto.getPrice());
 
-        foodRepogitory.save(food);
+        foodRepository.save(food);
 
         return "success";
-        //return type + "/" + food + "를 추가했습니다.";
     }
 
     public String getFoodById(Long id) {
-        Optional<Food> foodOptional = foodRepogitory.findById(id);
+        Optional<Food> foodOptional = foodRepository.findById(id);
         if (foodOptional.isEmpty()) {
-            return "해당하는 ID의 음식이 없습니다";
+            return "해당하는 ID의 음식이 없습니다.";
         }
 
         Food food = foodOptional.get();
-        return "success";
+        return food.getName() + " / " + food.getType() + " / " + food.getPrice();
     }
 
     public List<String> getFoods() {
-        List<Food> foods = foodRepogitory.findAll();
+        List<Food> foods = foodRepository.findAll();
         List<String> result = new ArrayList<String>();
         for (int i = 0; i < foods.size(); i++) {
             Food food = foods.get(i);
@@ -74,10 +73,10 @@ public class SimpleGameService {
     }
 
     public String deleteFoodById(Long id) {
-        Optional<Food> foodOptional = foodRepogitory.findById(id);
+        Optional<Food> foodOptional = foodRepository.findById(id);
         if (foodOptional.isPresent()) {
-//            foodRepogitory.deleteById(id);
-//            foodRepogitory.delete(foodOptional.get());
+//            foodRepository.deleteById(id);
+//            foodRepository.delete(foodOptional.get());
             foodOptional.get().delete();
             return "success";
         }
@@ -88,9 +87,10 @@ public class SimpleGameService {
     public String getLottoNumber() {
         List<Integer> result = new ArrayList<Integer>();
 
-        while (result.size() < 5) {
+        while (result.size() < 6) {
             int random = (int) (Math.random() * 45) + 1;
-            if (result.contains(random)) {
+
+            if (!result.contains(random)) {
                 result.add(random);
             }
         }
@@ -99,33 +99,34 @@ public class SimpleGameService {
     }
 
     public String updateFood(AddFoodReqDto addFoodReqDto) {
-        Optional<Food> foodOptional = foodRepogitory.findByNameAndDeleted(addFoodReqDto.getName(), false);
+        Optional<Food> foodOptional = foodRepository.findByNameAndDeleted(addFoodReqDto.getName(), false);
 
         if (foodOptional.isPresent()) {
             Food food = foodOptional.get();
             food.setType(addFoodReqDto.getType());
             food.setPrice(addFoodReqDto.getPrice());
+
             return "success";
         }
 
-        return "찾을 수 없는 name입니다.";
+        return "찾을 수 없는 name 입니다.";
     }
 
     public String orderFood(OrderFoodDto orderFoodDto) {
         Optional<User> userOptional = userRepository.findById(orderFoodDto.getUserid());
-        Optional<Food> FoodOptional = foodRepogitory.findByNameAndDeleted(orderFoodDto.getFoodName(), false);
+        Optional<Food> foodOptional = foodRepository.findByNameAndDeleted(orderFoodDto.getFoodName(), false);
 
-        if (userOptional.isPresent() && FoodOptional.isPresent()) {
+        if (userOptional.isPresent() && foodOptional.isPresent()) {
             User user = userOptional.get();
-            Food food = FoodOptional.get();
+            Food food = foodOptional.get();
             user.setMoney(user.getMoney() - food.getPrice());
-
             food.setOrderCount(food.getOrderCount() + 1);
+//            userRepository.save(user);
+//            foodRepository.save(food);
 
             return "success";
         }
 
-        return "fall";
+        return "fail";
     }
 }
-

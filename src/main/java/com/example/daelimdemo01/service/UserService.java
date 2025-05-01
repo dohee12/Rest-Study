@@ -10,18 +10,17 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
 
-    public String addUser(UserDto addUserReqDto) {
+    public String addUser(UserDto userDto) {
         User user = new User();
-        user.setNickname(addUserReqDto.getNickname());
-        user.setAge(addUserReqDto.getAge());
-        user.setMoney(addUserReqDto.getMoney());
+        user.setNickname(userDto.getNickname());
+        user.setAge(userDto.getAge());
+        user.setMoney(userDto.getMoney());
 
         userRepository.save(user);
 
@@ -51,17 +50,15 @@ public class UserService {
     public List<UserDto> getUsers() {
         List<User> users = userRepository.findAll();
 
-        List<UserDto> addUserReqDtos = new ArrayList<>();
+        List<UserDto> userDtos = new ArrayList<>();
         for (User user : users) {
-            addUserReqDtos.add(new UserDto(user));
+            userDtos.add(new UserDto(user));
         }
-
-        return addUserReqDtos;
+        return userDtos;
 
 //        return users.stream()
 //                .map(user -> new UserDto(user))
 //                .collect(Collectors.toList());
-
     }
 
     public String deleteUser(Long id) {
@@ -87,4 +84,6 @@ public class UserService {
 
         return "fail";
     }
+
+
 }
