@@ -30,7 +30,7 @@ public class SimpleGameController {
 
     @PostMapping("/add-food")
     public String addFood(@RequestBody AddFoodReqDto addFoodReqDto) {
-        return simpleGameService.addfood(addFoodReqDto);
+        return simpleGameService.addFood(addFoodReqDto);
     }
 
     @GetMapping("/get-food/{id}")
