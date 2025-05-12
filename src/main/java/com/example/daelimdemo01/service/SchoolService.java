@@ -105,7 +105,9 @@ public class SchoolService {
         // name은 동아리 이름
 
         Optional<Student> studentOptional = studentRepository.findById(idAndNameDto.getId());
+        System.out.println(idAndNameDto.getId());
         Club club = clubRepository.findByName(idAndNameDto.getName());
+        System.out.println(idAndNameDto.getName());
 
         if (studentOptional.isPresent() && club != null) {
             StudentClub studentClub = new StudentClub();
